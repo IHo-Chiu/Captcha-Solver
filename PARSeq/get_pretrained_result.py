@@ -21,6 +21,7 @@ def getImagesPaths(root):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_folder', default='images/')
+    parser.add_argument('--output_folder', default='images/')
     parser.add_argument('--output_csv', default='test.csv')
     args = parser.parse_args()
     
@@ -29,7 +30,7 @@ def main():
         os.makedirs(folder)
     
     paths = getImagesPaths(args.input_folder)
-    print(len(paths))
+    # print(len(paths))
 
 
     # Load model and image transforms
@@ -52,9 +53,9 @@ def main():
 
         labels.append(label[0])
 
-        # print(label[0])
+        print(label[0])
 
-        if i % int(len(paths)/100) == 0:
+        if len(paths) > 100 and i % int(len(paths)/100) == 0:
             print(f'running ... {int(i/len(paths)*100)}%', end='\r')
 
     print('running ... done')
@@ -63,11 +64,10 @@ def main():
     with open(args.output_csv, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         batch = zip(paths, labels)
-        batch.sort()
         for i, (path, label) in enumerate(batch):
             writer.writerow([path, label])
 
-            if i % int(len(paths)/100) == 0:
+            if len(paths) > 100 and i % int(len(paths)/100) == 0:
                 print(f'save result ... {int(i/len(paths)*100)}%', end='\r')
 
         print('save result ... done')
